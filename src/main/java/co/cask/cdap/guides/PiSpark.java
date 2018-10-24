@@ -22,15 +22,15 @@ import co.cask.cdap.api.spark.Spark;
 /**
  * Class for Spark program Specification
  */
-public class PageRankSpark extends AbstractSpark {
+public class PiSpark extends AbstractSpark {
 
   /**
    * Configures a {@link Spark} program
    */
   @Override
   public void configure() {
-    setName(PageRankSpark.class.getSimpleName());
-    setDescription("Spark program to compute PageRank");
-    setMainClass(PageRankProgram.class);
+    setName(PiSpark.class.getSimpleName());
+    setDescription("Spark program to compute PI");
+    setMainClass(PiProgram.class);
   }
 }

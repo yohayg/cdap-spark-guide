@@ -16,37 +16,27 @@
 
 package co.cask.cdap.guides
 
-import co.cask.cdap.api.common.Bytes
 import co.cask.cdap.api.spark.{SparkExecutionContext, SparkMain}
 import org.apache.spark.SparkContext
-import org.apache.spark.rdd.RDD
+
+import scala.math.random
 
 /**
  * Spark program to compute PageRanks.
  */
-class PageRankProgram extends SparkMain {
+class PiProgram extends SparkMain {
 
   private final val ITERATIONS_COUNT: Int = 10
 
   override def run(implicit sec: SparkExecutionContext) {
     val sc = new SparkContext
-    val lines: RDD[String] = sc.fromStream("backlinkURLStream")
-    val links = lines.map { s =>
-      val parts = s.split("\\s+")
-      (parts(0), parts(1))
-    }.distinct().groupByKey().cache()
-
-    var ranks = links.mapValues(v => 1.0)
-
-    // Calculate the PageRanks
-    for (i <- 1 to ITERATIONS_COUNT) {
-      val contribs = links.join(ranks).values.flatMap { case (urls, rank) =>
-        val size = urls.size
-        urls.map(url => (url, rank / size))
-      }
-      ranks = contribs.reduceByKey(_ + _).mapValues(0.15 + 0.85 * _)
-    }
-
-    ranks.map(x => (Bytes.toBytes(x._1), x._2)).saveAsDataset("pageRanks")
+    val slices = 2
+    val n = math.min(100000L * slices, Int.MaxValue).toInt // avoid overflow
+    val count = sc.parallelize(1 until n, slices).map { i =>
+      val x = random * 2 - 1
+      val y = random * 2 - 1
+      if (x*x + y*y < 1) 1 else 0
+    }.reduce(_ + _)
+    println("******************* Pi is roughly " + 4.0 * count / (n - 1))
   }
 }
