@@ -26,7 +26,6 @@ import scala.math.random
  */
 class PiProgram extends SparkMain {
 
-  private final val ITERATIONS_COUNT: Int = 10
 
   override def run(implicit sec: SparkExecutionContext) {
     val sc = new SparkContext
@@ -37,6 +36,6 @@ class PiProgram extends SparkMain {
       val y = random * 2 - 1
       if (x*x + y*y < 1) 1 else 0
     }.reduce(_ + _)
-    println("******************* Pi is roughly " + 4.0 * count / (n - 1))
+    println("******************* Pi is roughly " + 4.0 * count / (n - 1) + " *******************")
   }
 }
