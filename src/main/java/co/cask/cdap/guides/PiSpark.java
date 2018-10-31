@@ -29,7 +29,7 @@ public class PiSpark extends AbstractSpark {
    */
   @Override
   public void configure() {
-    setName(PiSpark.class.getSimpleName());
+    setName(PiProgram.class.getSimpleName());
     setDescription("Spark program to compute PI");
     setMainClass(PiProgram.class);
   }
